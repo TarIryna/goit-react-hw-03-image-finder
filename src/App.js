@@ -30,8 +30,9 @@ class App extends Component {
     };
     const URL = 'https://pixabay.com/api/';
     const data = await axios.get(URL, { params }).then(responce => responce.data);
-    console.log(data.hits);
+
     this.setState({ photoes: data.hits });
+    console.log(data.hits);
     console.log(this.state);
   }
 
