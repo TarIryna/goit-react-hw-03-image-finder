@@ -1,30 +1,26 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import s from './Searchbar.module.css'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import s from './Searchbar.module.css';
 
 class Searchbar extends Component {
-  state = {
-    inputValue: '',
-  }
+  state = { inputValue: '' };
 
   reset = () => {
-    this.setState({ inputValue: '' })
-  }
+    this.setState({ inputValue: '' });
+  };
 
-  onChangeInput = (e) => {
-    const newInputValue = e.currentTarget.value.trim()
-    this.setState({ inputValue: newInputValue })
-  }
+  onChangeInput = e => {
+    this.setState({ inputValue: e.currentTarget.value.trim() });
+  };
 
-  onSubmitForm = (e) => {
-    e.preventDefault()
-    this.props.onSubmit(this.state.inputValue)
-    this.reset()
-  }
+  onSubmitForm = e => {
+    e.preventDefault();
+    if (this.state.inputValue) {
+      this.props.onSubmit(this.state.inputValue);
+      this.reset();
+    }
+  };
 
-  reset = () => {
-    this.setState({ inputValue: '' })
-  }
   render() {
     return (
       <header className={s.searchbar}>
@@ -44,11 +40,11 @@ class Searchbar extends Component {
           />
         </form>
       </header>
-    )
+    );
   }
 }
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-}
-export default Searchbar
+};
+export default Searchbar;
