@@ -13,7 +13,7 @@ const ImageGalleryItem = ({ url, name, id }) => {
 export default ImageGalleryItem;
 
 ImageGalleryItem.propTypes = {
-  url: PropTypes.string,
+  url: PropTypes.number,
   name: PropTypes.string,
   id: PropTypes.string,
 };

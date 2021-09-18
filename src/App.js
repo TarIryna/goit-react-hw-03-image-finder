@@ -2,47 +2,50 @@ import React, { Component } from 'react';
 import './App.css';
 import Searchbar from './components/Searchbar';
 import ImageGallery from './components/ImageGallery';
+import Button from './components/Button';
 import axios from 'axios';
 
 class App extends Component {
   state = {
-    filter: 'cat',
+    filter: '',
     page: 1,
-    photoes: [
-      { id: '01', tags: 'cat-1', webformatURL: 'https://i.ibb.co/QXSx4TG/212506-1.jpg' },
-      { id: '02', tags: 'cat-2', webformatURL: 'https://i.ibb.co/7VQWypf/213547-4.jpg' },
-      { id: '03', tags: 'cat-3', webformatURL: 'https://i.ibb.co/9cjhDvt/213546-4.jpg' },
-    ],
+    photoes: null,
+    perPage: 12,
   };
 
   componentDidMount() {
     console.log('did mount');
   }
 
-  async getPhotoes() {
+  componentDidUpdate(prevState) {
+    console.log(prevState);
+  }
+
+  async getPhotoes(inputValue) {
     const params = {
       key: '22723314-dcec60eea06497913e1a2cdb4',
-      q: this.state.filter,
+      q: inputValue,
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: 12,
+      page: this.state.page,
+      per_page: this.state.perPage,
     };
     const URL = 'https://pixabay.com/api/';
     const data = await axios.get(URL, { params }).then(responce => responce.data);
-
-    this.setState({ photoes: data.hits });
-    console.log(data.hits);
-    console.log(this.state);
+    this.state.photoes
+      ? this.setState(prevState => ({ photoes: [...prevState.photoes, ...data.hits] }))
+      : this.setState({ photoes: data.hits });
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   }
 
   onSearchBtn = inputValue => {
     this.setState({ filter: inputValue });
-    console.log('inputValue');
-    console.log(inputValue);
-    console.log('this.state.filter arter setstate');
-    console.log(this.state.filter);
-    this.getPhotoes();
+    this.getPhotoes(inputValue);
+  };
+
+  onLoadMore = () => {
+    this.getPhotoes(this.state.filter);
   };
 
   render() {
@@ -50,6 +53,7 @@ class App extends Component {
       <div className="App">
         <Searchbar onSubmit={this.onSearchBtn} />
         {this.state.photoes && <ImageGallery photoes={this.state.photoes} />}
+        {this.state.photoes && <Button onClick={this.onLoadMore} />}
       </div>
     );
   }
