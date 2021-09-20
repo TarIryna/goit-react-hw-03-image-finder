@@ -15,7 +15,9 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-jquery-plugin": "^1.1.7",
+    "react-loader-spinner": "^4.0.0",
     "react-scripts": "4.0.3",
+    "react-toastify": "^8.0.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

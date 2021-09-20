@@ -15,5 +15,5 @@ export default ImageGalleryItem;
 ImageGalleryItem.propTypes = {
   url: PropTypes.number,
   name: PropTypes.string,
-  id: PropTypes.string,
+  id: PropTypes.number,
 };

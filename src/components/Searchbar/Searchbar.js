@@ -15,9 +15,7 @@ class Searchbar extends Component {
 
   onSubmitForm = e => {
     e.preventDefault();
-    if (this.state.inputValue) {
-      this.props.onSubmit(this.state.inputValue);
-    }
+    this.props.onSubmit(this.state.inputValue);
   };
 
   render() {
@@ -31,8 +29,6 @@ class Searchbar extends Component {
           <input
             className={s.input}
             type="text"
-            autocomplete="off"
-            autofocus
             placeholder="Search images and photos"
             onChange={this.onChangeInput}
             value={this.state.inputValue}

@@ -1,0 +1,7 @@
+ <ul className={s.gallery}>
+           {photoes.map(({ webformatURL, id, tags }) => (
+            <ImageGalleryItem url={webformatURL} name={tags} id={id} />
+          ))}
+        </ul>
+
+         {/* <Button onClick={this.onLoadMore} /> */}
