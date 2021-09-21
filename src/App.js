@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Searchbar from './components/Searchbar';
 import ImageGallery from './components/ImageGallery';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 class App extends Component {
@@ -10,12 +10,8 @@ class App extends Component {
     filter: '',
   };
 
-  onSearchBtn = inputValue => {
-    if (inputValue === '') {
-      toast('Введите ваш запрос');
-      return;
-    }
-    this.setState({ filter: inputValue });
+  onSearchBtn = filter => {
+    this.setState({ filter });
   };
 
   render() {
@@ -23,7 +19,7 @@ class App extends Component {
     return (
       <div className="App">
         <Searchbar onSubmit={this.onSearchBtn} />
-        {filter && <ImageGallery filter={filter} />}
+        {filter.length > 0 && <ImageGallery filter={filter} />}
         <ToastContainer />
       </div>
     );

@@ -1,21 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import s from './Searchbar.module.css';
+import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
-  state = { inputValue: '' };
-
-  reset = () => {
-    this.setState({ inputValue: '' });
-  };
+  state = { filter: '' };
 
   onChangeInput = e => {
-    this.setState({ inputValue: e.currentTarget.value.trim() });
+    const value = e.currentTarget.value.trim();
+    this.setState({ filter: value });
   };
 
   onSubmitForm = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.inputValue);
+    const { filter } = this.state;
+    if (filter === '') {
+      return toast('Введите ваш запрос');
+    }
+    this.props.onSubmit(filter);
   };
 
   render() {

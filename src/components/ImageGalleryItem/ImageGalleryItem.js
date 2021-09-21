@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import s from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ url, name, id }) => {
+const ImageGalleryItem = ({ url, name, onClick }) => {
   return (
-    <li key={id} className={s.item}>
+    <li className={s.item} onClick={onClick}>
       <img src={url} alt={name} className={s.image} loading="lazy" />
     </li>
   );

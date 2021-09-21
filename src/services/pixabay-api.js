@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 function fetchPhotoes(page, perPage, query) {
-  console.log(query);
   const params = {
     key: '22723314-dcec60eea06497913e1a2cdb4',
     q: query,

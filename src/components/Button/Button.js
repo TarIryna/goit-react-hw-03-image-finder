@@ -4,7 +4,7 @@ import s from './Button.module.css';
 
 const Button = ({ onClick }) => {
   return (
-    <button onClick={onClick} className={s.button}>
+    <button type="button" onClick={onClick} className={s.button}>
       Load more
     </button>
   );
