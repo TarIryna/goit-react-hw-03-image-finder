@@ -15,9 +15,7 @@ function fetchPhotoes(page, perPage, query) {
   const URL = 'https://pixabay.com/api/';
   return axios.get(URL, { params }).then(responce => responce.data);
 }
-// this.state.page > 1
-//   ? this.setState(prevState => ({ photoes: [...prevState.photoes, ...data.hits] }))
-//   : this.setState({ photoes: data.hits });
-// this.setState({ totalHits: data.totalHits });
-// this.setState(prevState => ({ page: prevState.page + 1 }));
-export default fetchPhotoes;
+const api = {
+  fetchPhotoes,
+};
+export default api;

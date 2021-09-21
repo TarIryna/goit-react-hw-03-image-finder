@@ -7,7 +7,7 @@ import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { toast } from 'react-toastify';
 import s from './ImageGallery.module.css';
-import fetchPhotoes from '../../services/pixabay-api';
+import api from '../../services/pixabay-api';
 
 class ImageGallery extends Component {
   state = {
@@ -16,28 +16,43 @@ class ImageGallery extends Component {
     perPage: 12,
     totalHits: null,
     status: 'idle',
+    filter: '',
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const prevFilter = prevProps.filter;
     const newFilter = this.props.filter;
     console.log(prevFilter, ' и новый ', newFilter);
     if (prevFilter !== newFilter) {
       this.setState({ perPage: 12, status: 'pending' });
-      fetchPhotoes(1, this.state.perPage, newFilter)
+      api
+        .fetchPhotoes(1, this.state.perPage, newFilter)
         .then(({ hits, totalHits }) => {
-          this.setState({ photoes: hits, status: 'resolved', totalHits });
+          this.setState({ photoes: hits, status: 'resolved', totalHits, filter: newFilter });
+        })
+        .catch(() => this.setState({ status: 'rejected' }));
+    }
+    const prevPage = prevState.page;
+    const newPage = this.state.page;
+
+    if (prevPage !== newPage) {
+      api
+        .fetchPhotoes(newPage, this.state.perPage, newFilter)
+        .then(({ hits, totalHits }) => {
+          this.setState({ status: 'resolved', totalHits });
+          this.setState(prevState => ({ photoes: [...prevState.photoes, ...hits] }));
         })
         .catch(() => this.setState({ status: 'rejected' }));
     }
   }
   onLoadMore = () => {
-    this.setState(prevState => ({ perPage: prevState.perPage + 12 }));
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+    console.log(this.state);
   };
 
   render() {
-    const { photoes, perPage, totalHits, status } = this.state;
-    console.log(Number(totalHits) >= Number(perPage) || status === 'resolved');
+    const { photoes, perPage, page, totalHits, status } = this.state;
+    console.log(Number(totalHits) >= Number(perPage) * Number(page) || status === 'resolved');
 
     if (status === 'idle') {
       return toast('Введите ваш запрос!');
@@ -50,11 +65,14 @@ class ImageGallery extends Component {
     }
     if (status === 'resolved') {
       return (
-        <ul className={s.gallery}>
-          {photoes.map(({ webformatURL, id, tags }) => (
-            <ImageGalleryItem url={webformatURL} name={tags} id={id} />
-          ))}
-        </ul>
+        <>
+          <ul className={s.gallery}>
+            {photoes.map(({ webformatURL, id, tags }) => (
+              <ImageGalleryItem url={webformatURL} name={tags} id={id} />
+            ))}
+          </ul>
+          <Button onClick={this.onLoadMore} />;
+        </>
       );
     }
     if (Number(totalHits) >= Number(perPage) || status === 'resolved') {
