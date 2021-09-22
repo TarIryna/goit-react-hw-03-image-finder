@@ -14,22 +14,25 @@ export default class Modal extends Component {
   }
   handleKeyDown = e => {
     if (e.code === 'Escape') {
-      this.props.closeModal();
+      this.props.onClose();
     }
   };
   handleBackdropClick = e => {
     if (e.currentTarget === e.target) {
-      this.props.closeModal();
+      this.props.onClose();
     }
   };
 
   render() {
-    const { src, alt } = this.props;
+    const { src, alt, onClose } = this.props;
     return createPortal(
       <div className={s.overlay} onClick={this.handleBackdropClick}>
         <div className={s.modal}>
           <img src={src} alt={alt} width="1024" height="768" />
         </div>
+        <button type="button" onClick={onClose}>
+          Закрыть
+        </button>
       </div>,
       modalRoot,
     );

@@ -18,46 +18,64 @@ class ImageGallery extends Component {
     status: 'idle',
     filter: '',
     index: null,
+    showModal: true,
   };
 
   componentDidMount() {
-    this.setState({ filter: this.props.filter, page: 1 });
+    this.setState({ filter: this.props.filter, page: 1, index: null, showModal: false });
+    this.getPhotoes();
   }
 
   componentDidUpdate(prevProps, prevState) {
     const prevFilter = prevProps.filter;
     const newFilter = this.props.filter;
-    if (prevFilter !== newFilter) {
-      this.setState({ page: 1, filter: newFilter });
-    }
-
     const prevPage = prevState.page;
     const newPage = this.state.page;
+    // const prevId = prevState.index;
+    // const newId = this.state.index;
+
+    if (prevFilter !== newFilter) {
+      this.setState({ page: 1, filter: newFilter });
+      this.getPhotoes();
+    }
 
     if (prevPage !== newPage) {
       this.setState({ status: 'pending' });
-      api
-        .fetchPhotoes(newPage, this.state.perPage, newFilter)
-        .then(({ hits, totalHits }) => {
-          this.setState({ status: 'resolved', totalHits });
-          if (newPage === 1) {
-            this.setState({ photoes: hits });
-          }
-          if (newPage > 0) {
-            this.setState(prevState => ({ photoes: [...prevState.photoes, ...hits] }));
-          }
-        })
-        .catch(() => this.setState({ status: 'rejected' }));
+      this.getPhotoes();
     }
+  }
+
+  getPhotoes() {
+    const { page, filter } = this.state;
+    api
+      .fetchPhotoes(page, filter)
+      .then(({ hits, totalHits }) => {
+        this.setState({ status: 'resolved', totalHits });
+        if (page > 1) {
+          this.setState(prevState => ({ photoes: [...prevState.photoes, ...hits] }));
+        }
+        if (page === 1) {
+          this.setState({ photoes: hits });
+        }
+      })
+      .catch(() => this.setState({ status: 'rejected' }));
   }
 
   onLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  render() {
-    const { photoes, page, totalHits, status, index } = this.state;
+  openModal = () => {
+    this.setState({ showModal: true });
+  };
 
+  closeModal = () => {
+    this.setState({ showModal: false, index: null });
+  };
+
+  render() {
+    const { photoes, page, totalHits, status, index, showModal } = this.state;
+    const isLast = Number(totalHits) > photoes.length ? true : false;
     if (status === 'idle') {
       return (
         <div>
@@ -80,26 +98,35 @@ class ImageGallery extends Component {
                 url={webformatURL}
                 name={tags}
                 key={index}
-                onClick={() => this.setState({ index })}
+                onClick={() => {
+                  this.setState({ index });
+                  this.openModal();
+                }}
               />
             ))}
           </ul>
-          <Button onClick={this.onLoadMore} />
+          {isLast && <Button onClick={this.onLoadMore} />}
+          {showModal && (
+            <Modal
+              src={photoes[index].largeImageURL}
+              alt={photoes[index].tags}
+              onClick={this.openModal}
+              onClose={this.closeModal}
+            />
+          )}
         </>
       );
     }
-    if (Number(totalHits) >= Number(page) * 12 && status === 'resolved') {
-      return <Button onClick={this.onLoadMore} />;
-    }
-    if (index >= 0) {
-      return (
-        <Modal
-          src={photoes[index].largeImageURL}
-          alt={photoes[index].tags}
-          closeModal={() => this.setState({ index: null })}
-        />
-      );
-    }
+
+    // if (index > 0) {
+    //   return (
+    //     <Modal
+    //       src={photoes[index].largeImageURL}
+    //       alt={photoes[index].tags}
+    //       closeModal={() => this.setState({ index: null })}
+    //     />
+    //   );
+    // }
   }
 }
 

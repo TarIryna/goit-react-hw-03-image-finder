@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-function fetchPhotoes(page, perPage, query) {
+function fetchPhotoes(page, query) {
   const params = {
     key: '22723314-dcec60eea06497913e1a2cdb4',
     q: query,
@@ -8,7 +8,7 @@ function fetchPhotoes(page, perPage, query) {
     orientation: 'horizontal',
     safesearch: true,
     page: page,
-    per_page: perPage,
+    per_page: 12,
   };
 
   const URL = 'https://pixabay.com/api/';
