@@ -55,8 +55,7 @@ class ImageGallery extends Component {
           this.setState({ photoes: hits });
         }
       })
-      .catch(() => this.setState({ status: 'rejected' }))
-      .finally(this.scroll());
+      .catch(() => this.setState({ status: 'rejected' }));
   }
 
   onLoadMore = () => {
@@ -73,7 +72,7 @@ class ImageGallery extends Component {
 
   scroll = () => {
     window.scrollTo({
-      top: document.documentElement.scrollHeight,
+      top: 1000,
       behavior: 'smooth',
     });
   };
@@ -88,9 +87,7 @@ class ImageGallery extends Component {
         </div>
       );
     }
-    if (status === 'pending') {
-      return <Loader type="Circles" color="#00BFFF" height={80} width={80} />;
-    }
+
     if (status === 'rejected') {
       return toast.error('Ваш запрос не найден');
     }
@@ -121,6 +118,9 @@ class ImageGallery extends Component {
           )}
         </>
       );
+    }
+    if (status === 'pending') {
+      return <Loader type="Circles" color="#00BFFF" height={80} width={80} />;
     }
   }
 }
