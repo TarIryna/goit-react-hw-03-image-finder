@@ -13,7 +13,6 @@ class ImageGallery extends Component {
   state = {
     page: null,
     photoes: [],
-    perPage: 12,
     totalHits: null,
     status: 'idle',
     filter: '',
@@ -31,15 +30,13 @@ class ImageGallery extends Component {
     const newFilter = this.props.filter;
     const prevPage = prevState.page;
     const newPage = this.state.page;
-    // const prevId = prevState.index;
-    // const newId = this.state.index;
 
     if (prevFilter !== newFilter) {
-      this.setState({ page: 1, filter: newFilter });
+      this.setState({ page: 1, filter: newFilter, status: 'pending', photoes: [] });
       this.getPhotoes();
     }
 
-    if (prevPage !== newPage) {
+    if (prevPage < newPage) {
       this.setState({ status: 'pending' });
       this.getPhotoes();
     }
@@ -58,7 +55,8 @@ class ImageGallery extends Component {
           this.setState({ photoes: hits });
         }
       })
-      .catch(() => this.setState({ status: 'rejected' }));
+      .catch(() => this.setState({ status: 'rejected' }))
+      .finally(this.scroll());
   }
 
   onLoadMore = () => {
@@ -73,9 +71,16 @@ class ImageGallery extends Component {
     this.setState({ showModal: false, index: null });
   };
 
+  scroll = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
   render() {
-    const { photoes, page, totalHits, status, index, showModal } = this.state;
-    const isLast = Number(totalHits) > photoes.length ? true : false;
+    const { photoes, totalHits, status, index, showModal } = this.state;
+    const isNotLast = Number(totalHits) !== photoes.length ? true : false;
     if (status === 'idle') {
       return (
         <div>
@@ -105,7 +110,7 @@ class ImageGallery extends Component {
               />
             ))}
           </ul>
-          {isLast && <Button onClick={this.onLoadMore} />}
+          {isNotLast && <Button onClick={this.onLoadMore} />}
           {showModal && (
             <Modal
               src={photoes[index].largeImageURL}
@@ -117,16 +122,6 @@ class ImageGallery extends Component {
         </>
       );
     }
-
-    // if (index > 0) {
-    //   return (
-    //     <Modal
-    //       src={photoes[index].largeImageURL}
-    //       alt={photoes[index].tags}
-    //       closeModal={() => this.setState({ index: null })}
-    //     />
-    //   );
-    // }
   }
 }
 
