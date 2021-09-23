@@ -45,7 +45,7 @@ class ImageGallery extends Component {
   getPhotoes() {
     const { page, filter } = this.state;
     api
-      .fetchPhotoes(page, filter)
+      .fetchPhotoes(filter, page)
       .then(({ hits, totalHits }) => {
         this.setState({ status: 'resolved', totalHits });
         if (page > 1) {
