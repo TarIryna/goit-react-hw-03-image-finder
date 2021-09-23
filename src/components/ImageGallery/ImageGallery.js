@@ -32,13 +32,17 @@ class ImageGallery extends Component {
     const newPage = this.state.page;
 
     if (prevFilter !== newFilter) {
-      this.setState({ page: 1, filter: newFilter, status: 'pending', photoes: [] });
-      this.getPhotoes();
+      this.setState(() => {
+        return { page: 1, filter: newFilter, status: 'pending', photoes: [] };
+      });
+      setTimeout(() => {
+        this.getPhotoes(newFilter, 1);
+        this.scroll();
+      }, 300);
     }
 
     if (prevPage < newPage) {
-      this.setState({ status: 'pending' });
-      this.getPhotoes();
+      this.setState({ status: 'pending' }, () => this.getPhotoes());
     }
   }
 
