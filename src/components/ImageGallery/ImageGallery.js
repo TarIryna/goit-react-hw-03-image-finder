@@ -59,7 +59,8 @@ class ImageGallery extends Component {
           this.setState({ photoes: hits });
         }
       })
-      .catch(() => this.setState({ status: 'rejected' }));
+      .catch(() => this.setState({ status: 'rejected' }))
+      .finally(() => this.scroll());
   }
 
   onLoadMore = () => {
