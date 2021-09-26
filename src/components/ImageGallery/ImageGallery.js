@@ -74,6 +74,10 @@ class ImageGallery extends Component {
   closeModal = () => {
     this.setState({ showModal: false, index: null });
   };
+  setImage = index => {
+    this.setState({ index });
+    this.openModal();
+  };
 
   scroll = () => {
     window.scrollTo({
@@ -100,17 +104,7 @@ class ImageGallery extends Component {
       return (
         <>
           <ul className={s.gallery}>
-            {photoes.map(({ webformatURL, tags }, index) => (
-              <ImageGalleryItem
-                url={webformatURL}
-                name={tags}
-                key={index}
-                onClick={() => {
-                  this.setState({ index });
-                  this.openModal();
-                }}
-              />
-            ))}
+            <ImageGalleryItem images={photoes} onClick={this.setImage} />
           </ul>
           {isNotLast && <Button onClick={this.onLoadMore} />}
           {showModal && (
