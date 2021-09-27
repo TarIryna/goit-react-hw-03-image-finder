@@ -104,7 +104,14 @@ class ImageGallery extends Component {
       return (
         <>
           <ul className={s.gallery}>
-            <ImageGalleryItem images={photoes} onClick={this.setImage} />
+            {photoes.map(({ webformatURL, tags }, index) => (
+              <ImageGalleryItem
+                url={webformatURL}
+                alt={tags}
+                index={index}
+                onClick={this.setImage}
+              />
+            ))}
           </ul>
           {isNotLast && <Button onClick={this.onLoadMore} />}
           {showModal && (
